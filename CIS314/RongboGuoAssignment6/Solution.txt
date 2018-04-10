@@ -1,0 +1,30 @@
+Rongbo Guo
+CIS 314
+Assignment 6
+
+problem2: Consider the following Y86 code:
+
+addl %eax %eax
+mrmovl 0(%ecx) %ebx
+addl %ebx %eax
+
+How many pipeline stalls (or bubbles) are required when running the above code	with and without forwarding (see sections 4.5.5-4.5.8)?
+
+answer shows below:
+
+when we run the code with forwarding it will have no pipeline stalls:
+|f|d|e|m|w|
+  |f|d|e|m|w|
+    |f|d|e|m|w|
+
+when we run the code without forwarding it will have 3 nop because we can only add after the the mrmovl memory finish. It succed at raw 6.
+|1|2|3|4|5|6|7|8|9|10|
+|f|d|e|m|w|           // addl
+  |f|d|e|m|w|         // mrmovl
+    |f|d|e|m|w|       // nop
+      |f|d|e|m|w|     // nop
+        |f|d|e|m|w|   // nop 
+          |f|d|e|m|w| // addl
+
+
+

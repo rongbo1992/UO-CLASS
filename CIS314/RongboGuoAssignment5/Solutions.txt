@@ -1,0 +1,109 @@
+Rongbo Guo
+CIS 314
+Assignment 5
+
+
+Problem 1:Write	Y86 code	equivalent	to	the	following	C	code:
+
+int f(int x) {
+ return 16*x;
+}
+
+int g(int a, int b) {
+ return f(a) + f(b);
+}
+
+The answer is showing below:
+.pos 0
+
+init: 
+		irmovl Stack, %esp
+		irmovl Stack, %ebp
+		call main
+		halt
+
+g:
+		pushl %ebp
+		rrmovl %esp, %ebp
+		mrmovl 12(%ebp), %ecx  //value a
+		mrmovl 8(%ebp), %edx   //value b
+		rrmovl %ecx, %edi      //into function varable %edi
+		call f                 //call f
+		rrmovl %eax, %ecx      //let f into %ecx
+		rrmovl %edx, %edi      //let b into %edi
+		call f 
+		addl %%ecx, %eax       //let f(a) and f(b) into %eax
+		popl %ebp              //pops base pointer %ebp
+		ret
+
+f:
+		pushl %ebp             //let ebp onto stack
+		rrmovl %ebp, %esp      //sets stack and base pointer to eachother
+		rrmovl %edi, %eax      //let int x into %edi
+		addl %eax, %eax
+		addl %eax, %eax			
+		addl %eax, %eax        //multiplying 16 because 2^4 = 16
+		addl %eax, %eax
+		rrmovl %ebp, %esp      //let the %ebp to %esp
+		popl %ebp              //pops base pointer
+		ret                    //retuns value
+
+
+.pos 0x100
+Stack:
+
+
+
+Problem 2: Draw a circuit picture which follow (A &&	!B)	||(!C && D):
+The answer is on the picture I submit by the photo which call problem2. 
+In the picture the first one is A, the second input is B, the third input
+is C, The last one is D.
+
+
+
+Problem 3:
+Fetch: 
+M1[pc] -> icode:ifun // let the instruction into insturction
+                     // fetches the instruction
+valP -> PC + 1       // increment perperation one time
+
+Decode:
+R[%ebp] -> valA      // store value a into %ebp
+R[%ebp] -> valB	     // store value b into %ebp
+
+Execute:
+valB + 4 -> valE     // creating room on the stack
+
+Memory:
+M4[valA] -> valM     // prepare the memory valM for valA
+
+WB:
+valE -> R[%esp]      // let the pointer define execute
+valM -> R[%ebp]	     // define the memory into %ebp
+
+PcUpdate
+valP -> PC           // updates the PC counter with the valP to defined in the fetch instruction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

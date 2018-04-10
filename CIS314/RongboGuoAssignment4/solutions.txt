@@ -1,0 +1,38 @@
+Rongbo Guo
+CIS 314
+Assignment 4
+Write x86 code equivalent to the following C code:
+
+int f(int x) {
+ return 16*x;
+}
+
+int g(int a, int b) {
+ return f(a) + f(b);
+}
+----------------------------------------------------------------------
+
+The answer shows below:
+
+f:					//f function
+pushl %ebp 			//let ebp onto stack
+movl %ebp, %esp 	//sets stack to pointer to eachother
+imul $16, %edi		//let edi multiplys by 16
+movl %edi, %eax		//let eax into edi 
+ret 				//returns to position in code
+popl %ebp			//removes the base pointer
+
+g:                  //g function
+pushl %ebp 			//let ebp onto stack
+movl %ebp, %esp 	//make stack to pointer to eachother
+movl 8(%ebp), %eax 	//let a = esp
+movl 12(%ebp), %ebx //let b = edx
+movl %eax, %edi		//let eax into function variable edi
+call f				//jumps to the f function
+movl %eax, %ecx 	//let eax (int a * 16) into ecx
+movl %ebx, %edi 	//buts ebx (int b) into edi for manipulation
+call f				//goes to f function
+addl %ecx, %eax 	//let b add a
+popl %esp
+popl %ebp
+

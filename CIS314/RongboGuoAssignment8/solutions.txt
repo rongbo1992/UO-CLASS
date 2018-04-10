@@ -1,0 +1,12 @@
+Rongbo Guo
+CIS 314
+Assignment 8
+
+Problem 6.39
+
+(a): answer: 4 * 16 * 16 = 1024 writes 
+
+(b): answer: (16/2) * 16 = 128 writer misses
+
+(C): answer: 128/1024 = 0.125 = 12.5% miss rate
+

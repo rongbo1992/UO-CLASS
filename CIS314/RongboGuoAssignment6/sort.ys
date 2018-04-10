@@ -1,0 +1,132 @@
+/*Rongbo Guo
+ *CIS 314
+ *Assignment 6
+ */
+
+
+	.pos 0
+
+init: 
+	irmovl Stack, %esp
+	irmovl Stack, %ebp
+	call main
+	halt
+
+	.align 10
+
+
+bubbleint:
+	pushl %ebp
+	rrmovl %esp, %ebp
+	irmovl $0, %ebx			//int swap
+	irmovl $64, %esi		//int the first element of the arry
+	addl %esi, %edi			//change the the pointer b/c
+
+bubblesort:
+    irmovl $64, %esi		
+	subl %esi, %edi			//pointing the first element in the array
+	irmovl $0, %ecx			//let the ecx be the for loop i = 0
+	irmovl $1, %esi			
+	xorl %ebx, %esi			//If swap!= 0 
+	je end					//run loop
+	irmovl $1, %ebx			//let swap += 1
+
+loop1:
+	mrmovl (%edi), %eax		//let the array[i] into eax
+	mrmovl  4(%edi), %edx	//let the array[i+1] into edx
+	subl %eax, %edx			//if eax > edx
+	jl swaps                //jump to the the swap 
+
+loop2:
+    irmovl $4, %esi			
+	addl %esi, %edi			//add 4 to the local pointer 
+    irmovl $1, %esi
+	addl %esi, %ecx			//added 1 to loop counter. (coubter++;)
+    irmovl $9, %esi
+	subl %ecx, %esi			//if ecx < esi
+	jne loop1				//jump to the loop1
+	jmp bubblesort			//else run the bubblesort
+
+swap:
+	mrmovl (%edi), %eax		//let the array[i] into eax
+	mrmovl  4(%edi), %edx	//let the array[i+1] into edx
+	rmmovl %eax, 4(%edi)	//
+	rmmovl  %edx, (%edi)	//swap array[i] and array[i+1]
+    irmovl $0, %esi
+	rrmovl %esi, %ebx		
+	jmp loop2				//jump to loop2
+
+array:						//giving the array with 10 element
+	.long 0x6
+	.long 0x8
+	.long 0x2
+	.long 0xb
+	.long 0x5
+	.long 0xe
+	.long 0x9
+	.long 0x3
+	.long 0xc
+	.long 0xd
+
+main:
+	pushl %ebp
+	rrmovl %esp, %ebp
+	irmovl array, %edi 		//let the array onto the stack
+	pushl %edi
+	call bubbleint          //star to sort array we are input	
+	rrmovl %ebp, %esp
+	popl %ebp				
+	ret	
+			
+
+end:
+	rrmovl %ebp, %esp		//end the loop
+	popl %ebp
+	ret
+
+
+
+.pos 0x100
+Stack: .long 0
+
+/*
+-----------------------------------------------------------------------------
+c code shows belw:
+#include <stdio.h>
+
+void bubblesort(int* array, int length){
+    do{
+        int swap = 0;  
+        for (int i = 1; i < length; i++){
+            if (array[i] > array[i+1]){     
+                int temp = array[i];
+                array[i] = array[i+1];
+                array[i+1] = temp;
+                swap += 1; 
+            }
+        }
+    }while(swap!= 0);  
+
+int main(){
+  int array[] = {6,8,2,11,5,14,9,3,13,14};
+  int n = 10;
+  bubblesort(array,n);
+  for ( int i = 0 ; i < n ; i++ ){
+  	printf("%d\n", array[i]);
+    }
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
