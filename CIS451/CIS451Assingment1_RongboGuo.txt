@@ -1,0 +1,95 @@
+AND /*
+ CIS451
+ Assignment 1
+ Rongbo Guo
+ */
+
+ ...............................................................................
+
+ Write SQL for the queries below on the stores7 database.
+
+ question 1:
+
+ SELECT fname, lname, company
+ FROM customer WHERE(company REGEXP 'Sports$' or 'Sport$')
+
+
+ question 2:
+
+ SELECT CONCAT(c.fname,' ', c.lname)AS customer_name, c.city, c.state, s.description
+ FROM customer c JOIN orders o 
+         USING(customer_num)
+      JOIN items i USING(order_num)
+      JOIN stock s USING(stock_num, manu_code)
+      JOIN manufact m USING(manu_code)
+      WHERE manu_name LIKE 'Smith' 
+
+ question 3:
+
+ SELECT s.sname, c.fname, c.lname
+ FROM state s LEFT OUTER JOIN customer c
+         ON c.state = s.code
+
+..............................................................................
+
+ Write the queries below on the company database.
+
+ question 4:
+
+ SELECT e.fname, e.lname, w.hours, p.pname
+ FROM employee e JOIN works_on w
+	 ON e.ssn = w.essn
+     JOIN project p ON w.pno = p.pnumber 
+     WHERE p.pname LIKE 'Computerization' and w.hours>=10
+
+ question 5:
+
+ SELECT d.dname, dpe.dependent_name
+ FROM department d JOIN employee e
+		 ON d.dnumber = e.dno
+	 LEFT OUTER JOIN dependent dpe ON e.ssn=dpe.essn
+
+ question 6:
+
+ SELECT CONCAT(sr.fname,' ',sr.lname) AS supervisor, CONCAT(se.fname,' ',se.lname) AS supervisee
+ FROM employee sr JOIN employee se
+         ON sr.ssn = se.superssn
+
+ ..............................................................................
+
+ Write SQL for the queries below on the sakila database.
+
+ question 7:
+
+ SELECT c.first_name,c.last_name,f.title
+ FROM customer c JOIN rental r
+         USING(customer_id)
+     JOIN inventory i Using(inventory_id)
+     JOIN film f USING(film_id)
+     WHERE YEAR(r.rental_date)=2005 AND MONTH(r.rental_date)= 6
+    
+ question 8:
+
+ SELECT c.first_name, c.last_name, c.email
+ FROM customer c JOIN payment p
+ 		 USING(customer_id)
+ 	 JOIN rental r USING(rental_id)
+     JOIN inventory i USING(inventory_id)
+     JOIN film_category f USING(film_id)
+     JOIN category ca USING(category_id)
+     WHERE ca.name LIKE 'Family' and p.amount >=2
+
+ question 9:
+
+ SELECT COUNT(*)
+ FROM rental r JOIN inventory i
+		 USING(inventory_id)
+	 JOIN film f USING(film_id)
+     WHERE f.title REGEXP 'TEEN'
+
+
+
+
+
+
+

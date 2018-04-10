@@ -1,0 +1,129 @@
+/*
+CIS451
+Assignment 3
+Rongbo Guo
+*/
+
+...............................................................................
+
+Write SQL for the queries below on the stores7 database.
+
+question 1:
+
+SELECT customer.fname, customer.lname, customer.city, state.sname
+FROM customer JOIN state 
+	ON customer.state = state.code 
+	WHERE state.sname LIKE 'Florida' OR state.sname LIKE 'Arizona' OR state.sname LIKE 'Oklahoma'
+	ORDER BY FIELD (state.sname,'Florida', 'Arizona', 'Oklahoma')
+
+
+question 2:
+
+SELECT c.customer_num, c.fname, c.lname, c.city, c.state, concat('$', if(isnull (sum(P.price)), 0.00, sum(P.price))) as totHero
+FROM customer c LEFT JOIN 
+     
+ (select i.total_price as price, customer_num as cnum 
+		FROM items i inner JOIN orders o 
+		ON i.order_num = o.order_num inner JOIN manufact m 
+		ON m.manu_code= i.manu_code
+		WHERE m.manu_name LIKE 'Hero')P 
+	ON P.cnum = customer_num
+	group by c.lname
+
+
+question 3:
+
+SELECT c.fname, c.lname, concat(sum(item_cost.item_price)+ship_cost.total_scost) as totalSpent
+FROM customer c JOIN (
+	SELECT i.total_price as item_price, o.customer_num as customernum
+	FROM items i inner JOIN orders o 
+	ON i.order_num = o.order_num) item_cost 
+	ON  item_cost.customernum = c.customer_num JOIN 
+	(select sum(o.ship_charge) as total_scost, o.customer_num 
+	FROM orders o 
+	group by o.customer_num)ship_cost 
+	ON ship_cost.customer_num = c.customer_num
+	group by c.lname
+
+question 4:
+
+SELECT *
+FROM stock s 
+	WHERE  concat(s.stock_num, s.manu_code) not in 
+	(select concat(i.stock_num, i.manu_code)
+	FROM items i JOIN stock s2 
+	ON (i.stock_num = s2.stock_num and i.manu_code = s2.manu_code))
+
+question 5:
+
+SELECT @average := avg(ship_weight) as Avg 
+	FROM orders;
+SELECT o1.order_num, o1.customer_num, o1.ship_weight, concat(@average) as average_weight 
+FROM  orders o1 
+WHERE abs(o1.ship_weight-@average) <= all (
+	select abs(o2.ship_weight-@average)
+	from orders o2)
+
+
+
+
+..............................................................................
+
+Write the queries below on the company database.
+
+
+question 7:
+
+SELECT * 
+FROM department JOIN project
+	ON department.dnumber = project.dnum and not exists(
+	SELECT p.plocation
+	FROM project p, dept_locations d 
+		WHERE p.dnum=d.dnumber and p.plocation = d.dlocation)
+    
+question 8:
+
+SELECT p.pname, total_time.total_ctime 
+FROM project p JOIN (
+	SELECT sum(wo.hours) as total_ctime, wo.pno 
+	FROM  works_on wo
+	group by pno) total_time 
+	ON total_time.pno = p.pnumber
+	WHERE total_time.total_ctime >= all(
+		SELECT sum(hours) 
+		FROM works_on 
+		group by pno)
+
+question 9:
+
+SELECT *
+FROM employee e JOIN works_on w1 
+	ON w1.essn = e.ssn JOIN(
+	SELECT sum(w2.hours) as sum_hours, w2.pno as wpno, p.pname as ppname
+	FROM works_on w2 inner JOIN project p 
+		ON w2.pno = p.pnumber
+		group by wpno 
+		order by sum_hours limit 2)sheetHour
+	ON sheetHour.wpno = w1.pno
+
+
+..............................................................................
+
+Write SQL for the queries below on the sakila database.
+
+SELECT f1.title, concat('$', if (isnull(totalPayment.amount), 0, totalPayment.amount))as amtspent
+FROM film f1 left join (
+	SELECT sum(p.amount)as amount, f2.title as title2
+    FROM film f2 join inventory i 
+			ON f2.film_id = i.film_id 
+        JOIN rental r ON f2.rental_duration = r.rental_id 
+        JOIN payment p ON f2.rental_duration = p.rental_id
+        group by f2.title
+		) totalPayment
+	ON f1.title = totalPayment.title2
+
+
+
+
+
+
